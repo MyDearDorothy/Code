@@ -123,6 +123,54 @@ public class TestBinaryTree {
         return list;
     }
 
+
+    //    二叉搜索树(BST)中的搜索
+    public TreeNode searchBST(TreeNode root, int val) {
+        /* 递归
+        if (root == null || root.val == val) return root;
+        return root.val > val ? searchBST(root.left, val) : searchBST(root.right, val);*/
+        // 迭代
+        while (root != null && root.val != val) {
+            root = root.val > val ? root.left : root.right;
+        }
+        return root;
+    }
+    //    二叉搜索树(BST)中的插入
+    public TreeNode insertIntoBST(TreeNode root, int val) {
+        /*递归
+        if(root == null){
+            return new TreeNode(val);
+        }
+        if(root.val < val){
+            root.right = insertIntoBST(root.right,val);
+        } else {
+            root.left = insertIntoBST(root.left,val);
+        }
+        return root;*/
+        // 迭代
+        if(root==null)
+            return new TreeNode(val);
+        TreeNode p=root;
+        while (p!=null){
+            if (p.val>val){
+                if(p.left==null) {
+                    p.left = new TreeNode(val);
+                    break;
+                }
+                else
+                    p=p.left;
+            }
+            else{
+                if (p.right==null) {
+                    p.right = new TreeNode(val);
+                    break;
+                }
+                p=p.right;
+            }
+        }
+        return root;
+
+    }
     public static void main(String[] args) {
 
     }

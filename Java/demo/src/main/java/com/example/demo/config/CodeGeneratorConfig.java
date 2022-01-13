@@ -22,10 +22,10 @@ public class CodeGeneratorConfig {
     private static final String DRIVERNAME="com.mysql.cj.jdbc.Driver";
     private static final String USERNAME="root";
     private static final String PASSWORD="12345";
-    private static final String PATH="E:\\Program\\IDEA\\demo\\src\\main\\java";
+    private static final String PATH="E:\\Program\\Code\\Java\\demo\\src\\main\\java";
     private static final String AUTHOR="ZhangCheng";
     private static final String PACKAGE="com.example.demo";
-    private static String[] table_name={"user","category"};
+    private static String[] table_name={"user_Infor"};
 
     public static void main(String[] args){
         //代码生成器
@@ -65,7 +65,7 @@ public class CodeGeneratorConfig {
             .setEntity("entity");
 
 
-        // 5.执
+        // 5.执行
         mpg.setGlobalConfig(globalConfig)
                 .setDataSource(dataSourceConfig)
                 .setStrategy(strategyConfig)
