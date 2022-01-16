@@ -1,5 +1,6 @@
 package Algorithms.数据结构;
 
+import org.springframework.data.relational.core.sql.In;
 import sun.reflect.generics.tree.Tree;
 
 import java.util.*;
@@ -24,6 +25,84 @@ class TreeNode {
 }
 
 public class TestBinaryTree {
+    //    翻转二叉树
+    public TreeNode invertTree(TreeNode root) {
+        /*递归
+        if(root==null)
+            return null;
+        swap(root);
+        invertTree(root.left);
+        invertTree(root.right);
+        return root;*/
+        if(root==null)
+            return null;
+        LinkedList<TreeNode> queue = new LinkedList<TreeNode>();
+        queue.add(root);
+        TreeNode p;
+        while(!queue.isEmpty()) {
+            p = queue.poll();
+            swap(p);
+            if(p.left!=null)
+                queue.add(p.left);
+            if(p.right!=null)
+                queue.add(p.right);
+        }
+        return root;
+    }
+    void swap(TreeNode p){
+        TreeNode temp = p.left;
+        p.left = p.right;
+        p.right = temp;
+    }
+    //    二叉搜索树的最近公共祖先
+    public TreeNode lowestCommonAncestor(TreeNode root, TreeNode p, TreeNode q) {
+        TreeNode ancestor = root;
+        while (true) {
+            if (p.val < ancestor.val && q.val < ancestor.val) {
+                ancestor = ancestor.left;
+            } else if (p.val > ancestor.val && q.val > ancestor.val) {
+                ancestor = ancestor.right;
+            } else {
+                break;
+            }
+        }
+        return ancestor;
+    }
+    //    对称二叉树：给你一个二叉树的根节点 root ， 检查它是否轴对称。
+    public boolean isSymmetric(TreeNode root) {
+        return check(root, root);
+    }
+    public boolean check(TreeNode p, TreeNode q) {
+        /*递归
+        if (p == null && q == null)
+            return true;
+        if (p == null || q == null)
+            return false;
+        return p.val == q.val && check(p.left, q.right) && check(p.right, q.left);*/
+        Queue<TreeNode> queue=new LinkedList<>();
+        queue.add(p);
+        queue.add(q);
+        while(!queue.isEmpty()){
+            p=queue.poll();
+            q=queue.poll();
+            if (p == null && q == null)
+                continue;
+            if ((p == null || q == null)||p.val!=q.val)
+                return false;
+            //子树为null照旧加入队列，出队时进行判断。
+            queue.add(p.left);
+            queue.add(q.right);
+
+            queue.add(p.right);
+            queue.add(q.left);
+        }
+        return true;
+
+    }
+
+
+
+
     //    二叉树先序遍历
     public List<Integer> preorderTraversal(TreeNode root){
         Stack<TreeNode> stack=new Stack<>();
@@ -124,6 +203,27 @@ public class TestBinaryTree {
     }
 
 
+
+    //    验证二叉搜索树(BST)
+    public boolean isValidBST(TreeNode root) {
+        Stack<TreeNode> stack=new Stack<>();
+        double temp = -Double.MAX_VALUE;
+        TreeNode p=root;
+        while(p!=null||!stack.isEmpty()){
+            if (p!=null){
+                stack.push(p);
+                p=p.left;
+            }
+            else{
+                p=stack.pop();
+                if(p.val<=temp)
+                    return false;
+                temp=p.val;
+                p=p.right;
+            }
+        }
+        return true;
+    }
     //    二叉搜索树(BST)中的搜索
     public TreeNode searchBST(TreeNode root, int val) {
         /* 递归
@@ -171,6 +271,9 @@ public class TestBinaryTree {
         return root;
 
     }
+
+
+
     public static void main(String[] args) {
 
     }

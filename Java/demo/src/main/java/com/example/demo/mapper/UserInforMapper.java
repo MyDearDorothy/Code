@@ -15,7 +15,6 @@ import java.util.List;
  * @author ZhangCheng
  * @since 2022-01-15
  */
-//@Repository             //每个mapper类前加上@Repository注解,解决了Service层使用Mapper对象出错问题
 public interface UserInforMapper extends BaseMapper<UserInfor> {
     @Select("select * from user_Infor")
     public List<UserInfor> selectUserInfor();
