@@ -1,4 +1,4 @@
-package Algorithms.数据结构;
+package 数据结构;
 
 /**
  * @author ZhangCheng
