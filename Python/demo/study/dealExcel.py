@@ -1,7 +1,6 @@
 # -*-coding:utf-8-*-
 # 数据分析与处理
-
-import openpyxl
+import numpy as np
 import pandas as pd
 
 class Handler:
