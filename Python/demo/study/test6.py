@@ -1,5 +1,5 @@
 # -*-coding:utf-8-*-
-# 数据分析与处理
+# 数据分析与处理（一）
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
@@ -8,15 +8,33 @@ import pandas as pd
 # Pyplot 是 Matplotlib 的子库， 是常用的绘图模块，能很方便让用户绘制 2D 图表。
 # plot() 函数是绘制二维图形的最基本函数。
 def test1():
-    ypoints = np.array([1,3,4,5,8,9,6,1,3,4,5,2,4 ])  # 根据列表创建数组
+    # 绘制第一张子图折线图
+    ax1=plt.subplot(2,2,1)
+    xpoints = np.arange(0,10,1)
+    ypoints = xpoints+1
     # 列表和数组有着相同的索引切片机制，唯一的区别就是数组中的元素通过空格分隔，而列表中的元素通过逗号分隔。
     # plot([x], y, [fmt], **kwargs)
-    plt.plot(ypoints,marker='o',c='red')       # fmt = '[marker][linestyle][color]' ，其中分别定义标记、线条样式、颜色。
+    # fmt = '[marker][linestyle][color]' ，其中分别定义标记、线条样式、颜色。
+    plt.plot(ypoints,marker='o',c='red',label="y=x+1")
     # xlabel()和ylabel()方法来设置x轴和y轴的标签、title()方法来设置标题。
     # 这三个方法都有loc参数来设置显示的位置，默认值为'center'。
     plt.title("Title")
-    plt.xlabel("x - label",loc="right")
-    plt.ylabel("y - label",loc="top")
+    plt.xlabel("x - label")
+    plt.ylabel("y - label")
+    plt.legend(loc="upper left")
+
+    # 绘制第二张子图柱状图
+    ax2 = plt.subplot(2, 2, 2)
+    plt.bar(xpoints,ypoints)
+
+    # 绘制第三张子图饼图
+    ax3 = plt.subplot(2, 2, 3)
+    plt.scatter(xpoints,ypoints)
+
+    # 绘制第四张子图直方图
+    ax4 = plt.subplot(2, 2, 4)
+    plt.hist(xpoints,ypoints)
+
     plt.show()
 
 # 列表和数组的区别于联系
@@ -78,6 +96,7 @@ def test3():
     print(d)
 
 if __name__ == '__main__':
+    test1()
     # test2()
     # createArray()
-    test3()
+    # test3()
