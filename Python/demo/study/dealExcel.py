@@ -5,7 +5,7 @@ import pandas as pd
 
 class Handler:
     def __init__(self):
-        self.path=r"E:\Program\office学习\excel\handler.xlsx"
+        self.path=r"E:\Program\office学习\excel\excel数据.xlsx"
 
     def writeInto(self):
         list1=[[1,2],[2,4],[3,6]]

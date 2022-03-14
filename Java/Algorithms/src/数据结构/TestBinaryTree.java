@@ -20,7 +20,6 @@ class TreeNode {
         this.right = right;
     }
 }
-
 public class TestBinaryTree {
     //    翻转二叉树
     public TreeNode invertTree(TreeNode root) {
@@ -96,9 +95,6 @@ public class TestBinaryTree {
         return true;
 
     }
-
-
-
 
     //    二叉树先序遍历
     public List<Integer> preorderTraversal(TreeNode root){
@@ -199,8 +195,6 @@ public class TestBinaryTree {
         return list;
     }
 
-
-
     //    验证二叉搜索树(BST)
     public boolean isValidBST(TreeNode root) {
         Stack<TreeNode> stack=new Stack<>();
@@ -266,12 +260,6 @@ public class TestBinaryTree {
             }
         }
         return root;
-
-    }
-
-
-
-    public static void main(String[] args) {
 
     }
 }
