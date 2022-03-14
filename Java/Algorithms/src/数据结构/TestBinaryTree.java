@@ -50,20 +50,6 @@ public class TestBinaryTree {
         p.left = p.right;
         p.right = temp;
     }
-    //    二叉搜索树的最近公共祖先
-    public TreeNode lowestCommonAncestor(TreeNode root, TreeNode p, TreeNode q) {
-        TreeNode ancestor = root;
-        while (true) {
-            if (p.val < ancestor.val && q.val < ancestor.val) {
-                ancestor = ancestor.left;
-            } else if (p.val > ancestor.val && q.val > ancestor.val) {
-                ancestor = ancestor.right;
-            } else {
-                break;
-            }
-        }
-        return ancestor;
-    }
     //    对称二叉树：给你一个二叉树的根节点 root ， 检查它是否轴对称。
     public boolean isSymmetric(TreeNode root) {
         return check(root, root);
@@ -95,7 +81,6 @@ public class TestBinaryTree {
         return true;
 
     }
-
     //    二叉树先序遍历
     public List<Integer> preorderTraversal(TreeNode root){
         Stack<TreeNode> stack=new Stack<>();
@@ -195,6 +180,7 @@ public class TestBinaryTree {
         return list;
     }
 
+
     //    验证二叉搜索树(BST)
     public boolean isValidBST(TreeNode root) {
         Stack<TreeNode> stack=new Stack<>();
@@ -261,5 +247,19 @@ public class TestBinaryTree {
         }
         return root;
 
+    }
+    //    二叉搜索树(BST)的最近公共祖先
+    public TreeNode lowestCommonAncestor(TreeNode root, TreeNode p, TreeNode q) {
+        TreeNode ancestor = root;
+        while (true) {
+            if (p.val < ancestor.val && q.val < ancestor.val) {
+                ancestor = ancestor.left;
+            } else if (p.val > ancestor.val && q.val > ancestor.val) {
+                ancestor = ancestor.right;
+            } else {
+                break;
+            }
+        }
+        return ancestor;
     }
 }

@@ -17,6 +17,7 @@ class ListNode {
     }
 }
 public class TestListNode {
+
     //    合并两个有序链表
     public ListNode mergeLists(ListNode list1, ListNode list2) {
         ListNode root=new ListNode();
