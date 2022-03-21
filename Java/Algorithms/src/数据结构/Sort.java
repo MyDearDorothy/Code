@@ -1,6 +1,5 @@
 package 数据结构;
 
-import java.util.Queue;
 import java.util.Scanner;
 
 /**
@@ -17,7 +16,11 @@ public class Sort {
     }
 //    直接插入排序
     public static void InsertSort(int arr[]){
-
+        int len= arr.length;;
+        for (int i=1;i<len;i++)
+            for (int j=i;j>=1;j--)
+                if (arr[j]<arr[j-1])
+                    swap(arr,j,j-1);
     }
 //    折半插入排序
     public static void BinaryInsertSort(int arr[]){
@@ -75,9 +78,13 @@ public class Sort {
 
     }
 //    堆排序
+    public static void HeapSort(int arr[]){
+
+    }
 //    希尔排序
 //    计数排序
 //    基数排序
+//    桶排序
 
 //    打印
     public static void Print(int arr[]){

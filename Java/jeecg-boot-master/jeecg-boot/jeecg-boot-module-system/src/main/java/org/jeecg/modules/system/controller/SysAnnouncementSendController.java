@@ -8,8 +8,11 @@ import javax.servlet.http.HttpServletRequest;
 import org.apache.shiro.SecurityUtils;
 import org.jeecg.common.api.vo.Result;
 import org.jeecg.common.constant.CommonConstant;
+import org.jeecg.common.constant.WebsocketConst;
 import org.jeecg.common.system.vo.LoginUser;
+import org.jeecg.common.util.SqlInjectionUtil;
 import org.jeecg.common.util.oConvertUtils;
+import org.jeecg.modules.message.websocket.WebSocket;
 import org.jeecg.modules.system.entity.SysAnnouncementSend;
 import org.jeecg.modules.system.model.AnnouncementSendModel;
 import org.jeecg.modules.system.service.ISysAnnouncementSendService;
@@ -45,7 +48,9 @@ import lombok.extern.slf4j.Slf4j;
 public class SysAnnouncementSendController {
 	@Autowired
 	private ISysAnnouncementSendService sysAnnouncementSendService;
-	
+	@Autowired
+	private WebSocket webSocket;
+
 	/**
 	  * 分页列表查询
 	 * @param sysAnnouncementSend
@@ -65,6 +70,11 @@ public class SysAnnouncementSendController {
 		//排序逻辑 处理
 		String column = req.getParameter("column");
 		String order = req.getParameter("order");
+
+		//issues/3331 SQL injection vulnerability
+		SqlInjectionUtil.filterContent(column);
+		SqlInjectionUtil.filterContent(order);
+
 		if(oConvertUtils.isNotEmpty(column) && oConvertUtils.isNotEmpty(order)) {
 			if("asc".equals(order)) {
 				queryWrapper.orderByAsc(oConvertUtils.camelToUnderline(column));
@@ -235,6 +245,9 @@ public class SysAnnouncementSendController {
 		updateWrapper.last("where user_id ='"+userId+"'");
 		SysAnnouncementSend announcementSend = new SysAnnouncementSend();
 		sysAnnouncementSendService.update(announcementSend, updateWrapper);
+		JSONObject socketParams = new JSONObject();
+		socketParams.put(WebsocketConst.MSG_CMD, WebsocketConst.CMD_TOPIC);
+		webSocket.sendMessage(socketParams.toJSONString());
 		result.setSuccess(true);
 		result.setMessage("全部已读");
 		return result;

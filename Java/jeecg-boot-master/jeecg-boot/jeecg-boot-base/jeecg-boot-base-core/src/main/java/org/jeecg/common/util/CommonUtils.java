@@ -1,26 +1,31 @@
 package org.jeecg.common.util;
 
-import java.io.*;
-import java.sql.Connection;
-import java.sql.DatabaseMetaData;
-import java.sql.SQLException;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
-import javax.sql.DataSource;
-
+import com.baomidou.dynamic.datasource.spring.boot.autoconfigure.DataSourceProperty;
+import com.baomidou.dynamic.datasource.spring.boot.autoconfigure.DynamicDataSourceProperties;
+import com.baomidou.mybatisplus.annotation.DbType;
+import com.baomidou.mybatisplus.extension.toolkit.JdbcUtils;
+import lombok.extern.slf4j.Slf4j;
 import org.jeecg.common.constant.CommonConstant;
 import org.jeecg.common.constant.DataBaseConstant;
 import org.jeecg.common.util.filter.FileTypeFilter;
 import org.jeecg.common.util.oss.OssBootUtil;
 import org.jeecgframework.poi.util.PoiPublicUtil;
+import org.springframework.jdbc.datasource.DriverManagerDataSource;
 import org.springframework.util.FileCopyUtils;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.baomidou.mybatisplus.annotation.DbType;
-import com.baomidou.mybatisplus.extension.toolkit.JdbcUtils;
-
-import lombok.extern.slf4j.Slf4j;
+import javax.servlet.http.HttpServletRequest;
+import javax.sql.DataSource;
+import java.io.ByteArrayInputStream;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.sql.Connection;
+import java.sql.DatabaseMetaData;
+import java.sql.SQLException;
+import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 @Slf4j
 public class CommonUtils {
@@ -208,6 +213,42 @@ public class CommonUtils {
     }
 
     /**
+     * 根据数据源key获取DataSourceProperty
+     * @param sourceKey
+     * @return
+     */
+    public static DataSourceProperty getDataSourceProperty(String sourceKey){
+        DynamicDataSourceProperties prop = SpringContextUtils.getApplicationContext().getBean(DynamicDataSourceProperties.class);
+        Map<String, DataSourceProperty> map = prop.getDatasource();
+        DataSourceProperty db = (DataSourceProperty)map.get(sourceKey);
+        return db;
+    }
+
+    /**
+     * 根据sourceKey 获取数据源连接
+     * @param sourceKey
+     * @return
+     * @throws SQLException
+     */
+    public static Connection getDataSourceConnect(String sourceKey) throws SQLException {
+        if (oConvertUtils.isEmpty(sourceKey)) {
+            sourceKey = "master";
+        }
+        DynamicDataSourceProperties prop = SpringContextUtils.getApplicationContext().getBean(DynamicDataSourceProperties.class);
+        Map<String, DataSourceProperty> map = prop.getDatasource();
+        DataSourceProperty db = (DataSourceProperty)map.get(sourceKey);
+        if(db==null){
+            return null;
+        }
+        DriverManagerDataSource ds = new DriverManagerDataSource ();
+        ds.setDriverClassName(db.getDriverClassName());
+        ds.setUrl(db.getUrl());
+        ds.setUsername(db.getUsername());
+        ds.setPassword(db.getPassword());
+        return ds.getConnection();
+    }
+
+    /**
      * 获取数据库类型
      * @param dataSource
      * @return
@@ -241,5 +282,40 @@ public class CommonUtils {
         }
         return DB_TYPE;
 
+    }
+    /**
+     * 获取服务器地址
+     *
+     * @param request
+     * @return
+     */
+    public static String getBaseUrl(HttpServletRequest request) {
+        //1.【兼容】兼容微服务下的 base path-------
+        String x_gateway_base_path = request.getHeader("X_GATEWAY_BASE_PATH");
+        if(oConvertUtils.isNotEmpty(x_gateway_base_path)){
+            log.info("x_gateway_base_path = "+ x_gateway_base_path);
+            return  x_gateway_base_path;
+        }
+        //2.【兼容】SSL认证之后，request.getScheme()获取不到https的问题
+        // https://blog.csdn.net/weixin_34376986/article/details/89767950
+        String scheme = request.getHeader("X-Forwarded-Scheme");
+        if(oConvertUtils.isEmpty(scheme)){
+            scheme = request.getScheme();
+        }
+
+        //3.常规操作
+        String serverName = request.getServerName();
+        int serverPort = request.getServerPort();
+        String contextPath = request.getContextPath();
+
+        //返回 host domain
+        String baseDomainPath = null;
+        if(80 == serverPort){
+            baseDomainPath = scheme + "://" + serverName  + contextPath ;
+        }else{
+            baseDomainPath = scheme + "://" + serverName + ":" + serverPort + contextPath ;
+        }
+        log.info("-----Common getBaseUrl----- : " + baseDomainPath);
+        return baseDomainPath;
     }
 }

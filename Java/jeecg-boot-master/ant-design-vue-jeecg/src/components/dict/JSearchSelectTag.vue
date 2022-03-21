@@ -48,13 +48,17 @@
     props:{
       disabled: Boolean,
       value: [String, Number],
-      dict: String,
       dictOptions: Array,
       async: Boolean,
       placeholder:{
         type:String,
         default:"请选择",
         required:false
+      },
+      dict:{
+        type: String,
+        default: '',
+        required: false
       },
       popContainer:{
         type:String,
@@ -119,7 +123,17 @@
         if(this.async){
           if(!this.selectedAsyncValue || !this.selectedAsyncValue.key || this.selectedAsyncValue.key!=this.value){
             console.log("这才请求后台")
-            getAction(`/sys/dict/loadDictItem/${this.dict}`,{key:this.value}).then(res=>{
+            //update-begin-author:taoyan date:20220112 for: 方法initSelectValue 根据下拉框实际值查询下拉框的显示的文本 因后台接口只处理3个参数，所以将过滤条件去掉
+            // TODO 隐患 查询效率问题 还是应该在后台作筛选
+            let itemDictStr = this.dict
+            let arr = itemDictStr.split(',')
+            if(arr && arr.length==4){
+              // 删除最后一个元素
+              arr.pop();
+              itemDictStr = arr.join(',')
+            }
+            //update-end-author:taoyan date:20220112 for: 方法initSelectValue 根据下拉框实际值查询下拉框的显示的文本 因后台接口只处理3个参数，所以将过滤条件去掉
+            getAction(`/sys/dict/loadDictItem/${itemDictStr}`,{key:this.value}).then(res=>{
               if(res.success){
                 let obj = {
                   key:this.value,
@@ -186,16 +200,20 @@
             }
           }
         }else{
-          //异步一开始也加载一点数据
-          this.loading=true
-          getAction(`/sys/dict/loadDict/${this.dict}`,{pageSize: this.pageSize, keyword:''}).then(res=>{
-            this.loading=false
-            if(res.success){
-              this.options = res.result
-            }else{
-              this.$message.warning(res.message)
-            }
-          })
+          if(!this.dict){
+            console.error('搜索组件未配置字典项')
+          }else{
+            //异步一开始也加载一点数据
+            this.loading=true
+            getAction(`/sys/dict/loadDict/${this.dict}`,{pageSize: this.pageSize, keyword:''}).then(res=>{
+              this.loading=false
+              if(res.success){
+                this.options = res.result
+              }else{
+                this.$message.warning(res.message)
+              }
+            })
+          }
         }
       },
       filterOption(input, option) {

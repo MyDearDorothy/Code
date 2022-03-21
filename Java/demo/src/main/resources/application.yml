@@ -1,4 +1,0 @@
-#激活指定的profile
-spring:
-  profiles:
-    active: dev

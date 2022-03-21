@@ -1,6 +1,5 @@
 package org.jeecg.config.shiro;
 
-import cn.hutool.crypto.SecureUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.shiro.authc.AuthenticationException;
 import org.apache.shiro.authc.AuthenticationInfo;
@@ -11,7 +10,6 @@ import org.apache.shiro.authz.SimpleAuthorizationInfo;
 import org.apache.shiro.realm.AuthorizingRealm;
 import org.apache.shiro.subject.PrincipalCollection;
 import org.jeecg.common.api.CommonAPI;
-import org.jeecg.common.constant.CacheConstant;
 import org.jeecg.common.constant.CommonConstant;
 import org.jeecg.common.system.util.JwtUtil;
 import org.jeecg.common.system.vo.LoginUser;
@@ -97,7 +95,14 @@ public class ShiroRealm extends AuthorizingRealm {
             throw new AuthenticationException("token为空!");
         }
         // 校验token有效性
-        LoginUser loginUser = this.checkUserTokenIsEffect(token);
+        LoginUser loginUser = null;
+        try {
+            loginUser = this.checkUserTokenIsEffect(token);
+        } catch (AuthenticationException e) {
+            JwtUtil.responseError(SpringContextUtils.getHttpServletResponse(),401,e.getMessage());
+            e.printStackTrace();
+            return null;
+        }
         return new SimpleAuthenticationInfo(loginUser, token, getName());
     }
 
@@ -125,16 +130,19 @@ public class ShiroRealm extends AuthorizingRealm {
         }
         // 校验token是否超时失效 & 或者账号密码是否错误
         if (!jwtTokenRefresh(token, username, loginUser.getPassword())) {
-            throw new AuthenticationException("Token失效，请重新登录!");
+            throw new AuthenticationException(CommonConstant.TOKEN_IS_INVALID_MSG);
         }
         //update-begin-author:taoyan date:20210609 for:校验用户的tenant_id和前端传过来的是否一致
         String userTenantIds = loginUser.getRelTenantIds();
         if(oConvertUtils.isNotEmpty(userTenantIds)){
             String contextTenantId = TenantContext.getTenant();
             if(oConvertUtils.isNotEmpty(contextTenantId) && !"0".equals(contextTenantId)){
-                if(String.join(",",userTenantIds).indexOf(contextTenantId)<0){
+                //update-begin-author:taoyan date:20211227 for: /issues/I4O14W 用户租户信息变更判断漏洞
+                String[] arr = userTenantIds.split(",");
+                if(!oConvertUtils.isIn(contextTenantId, arr)){
                     throw new AuthenticationException("用户租户信息变更,请重新登陆!");
                 }
+                //update-end-author:taoyan date:20211227 for: /issues/I4O14W 用户租户信息变更判断漏洞
             }
         }
         //update-end-author:taoyan date:20210609 for:校验用户的tenant_id和前端传过来的是否一致

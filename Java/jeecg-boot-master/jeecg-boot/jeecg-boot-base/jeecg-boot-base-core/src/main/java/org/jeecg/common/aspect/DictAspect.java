@@ -2,6 +2,7 @@ package org.jeecg.common.aspect;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+import com.alibaba.fastjson.parser.Feature;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -18,6 +19,7 @@ import org.jeecg.common.constant.CommonConstant;
 import org.jeecg.common.system.vo.DictModel;
 import org.jeecg.common.util.oConvertUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
@@ -25,6 +27,7 @@ import org.springframework.util.StringUtils;
 import java.lang.reflect.Field;
 import java.text.SimpleDateFormat;
 import java.util.*;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 /**
@@ -37,14 +40,14 @@ import java.util.stream.Collectors;
 @Component
 @Slf4j
 public class DictAspect {
-
+    @Lazy
     @Autowired
     private CommonAPI commonAPI;
     @Autowired
     public RedisTemplate redisTemplate;
 
     // 定义切点Pointcut
-    @Pointcut("execution(public * org.jeecg.modules..*.*Controller.*(..))")
+    @Pointcut("execution(public * org.jeecg.modules..*.*Controller.*(..)) || @annotation(org.jeecg.common.aspect.annotation.AutoDict)")
     public void excudeService() {
     }
 
@@ -102,7 +105,10 @@ public class DictAspect {
                     } catch (JsonProcessingException e) {
                         log.error("json解析失败"+e.getMessage(),e);
                     }
-                    JSONObject item = JSONObject.parseObject(json);
+                    //update-begin--Author:scott -- Date:20211223 ----for：【issues/3303】restcontroller返回json数据后key顺序错乱 -----
+                    JSONObject item = JSONObject.parseObject(json, Feature.OrderedField);
+                    //update-end--Author:scott -- Date:20211223 ----for：【issues/3303】restcontroller返回json数据后key顺序错乱 -----
+
                     //update-begin--Author:scott -- Date:20190603 ----for：解决继承实体字段无法翻译问题------
                     //for (Field field : record.getClass().getDeclaredFields()) {
                     // 遍历所有字段，把字典Code取出来，放到 map 里
@@ -261,7 +267,10 @@ public class DictAspect {
                 for (DictModel dict : texts) {
                     String redisKey = String.format("sys:cache:dictTable::SimpleKey [%s,%s]", dictCode, dict.getValue());
                     try {
-                        redisTemplate.opsForValue().set(redisKey, dict.getText());
+                        // update-begin-author:taoyan date:20211012 for: 字典表翻译注解缓存未更新 issues/3061
+                        // 保留5分钟
+                        redisTemplate.opsForValue().set(redisKey, dict.getText(), 300, TimeUnit.SECONDS);
+                        // update-end-author:taoyan date:20211012 for: 字典表翻译注解缓存未更新 issues/3061
                     } catch (Exception e) {
                         log.warn(e.getMessage(), e);
                     }

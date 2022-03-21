@@ -28,6 +28,9 @@
       </template>
       <!-- update-end-author:taoyan date:20201221 for:此处删掉transition标签 不知道为什么加上后 页面路由切换的时候即1及菜单切到2及菜单的时候 两个菜单页面会同时出现300-500秒左右 -->
     </div>
+    <!-- update-begin-author:zyf date:20211129 for:qiankun 挂载子应用盒子 -->
+    <div id="content" class="app-view-box"></div>
+    <!-- update-end-author:zyf date:20211129 for: qiankun 挂载子应用盒子-->
   </global-layout>
 </template>
 
@@ -38,6 +41,7 @@
   import { triggerWindowResizeEvent } from '@/utils/util'
   import Vue from 'vue'
   import { CACHE_INCLUDED_ROUTES } from '@/store/mutation-types'
+  import registerApps from "@/qiankun";
 
   const indexKey = '/dashboard/analysis'
 
@@ -92,6 +96,14 @@
       this.activePage = currentRoute.fullPath
     },
     mounted() {
+      if (process.env.VUE_APP_QIANKUN == 'true') {
+        //update-begin-author:zyf date:20211129 for:qiankun 注册子应用
+        if (!window.qiankunStarted) {
+          window.qiankunStarted = true;
+          registerApps();
+        }
+        //update-end-author:zyf date:20211129 for:qiankun 注册子应用
+      }
     },
     watch: {
       '$route': function(newRoute) {
@@ -219,9 +231,19 @@
             cacheRouterArray.splice(cacheRouterArray.findIndex(item => item === componentName), 1)
             Vue.ls.set(CACHE_INCLUDED_ROUTES, cacheRouterArray)
           }
+          this.emitPageClosed(removeRoute[0])
         }
         //update-end--Author:scott  Date:20201015 for：路由缓存问题，关闭了tab页时再打开就不刷新 #842
 
+      },
+      // 触发 page-closed （页面关闭）全局事件
+      emitPageClosed(closedRoute) {
+        this.$root.$emit('page-closed', {
+          closedRoute,
+          pageList: this.pageList,
+          linkList: this.linkList,
+          activePage: this.activePage
+        })
       },
       onContextmenu(e) {
         const pagekey = this.getPageKey(e.target)

@@ -16,11 +16,13 @@
         :multi="multi"
         :rootOpened="rootOpened"
         :depart-id="departIds"
+        :store="storeField()"
+        :text="textField()"
         @ok="handleOK"
         @initComp="initComp"/>
     <span style="display: inline-block;height:100%;padding-left:14px" v-if="departIds" >
       <span @click="openSelect" style="display: inline-block;vertical-align: middle">{{ departNames }}</span>
-      <a-icon style="margin-left:5px;vertical-align: middle" type="close-circle" @click="handleEmpty" title="清空"/>
+      <a-icon v-if="!componentDisabled" style="margin-left:5px;vertical-align: middle" type="close-circle" @click="handleEmpty" title="清空"/>
     </span>
   </div>
 </template>
@@ -68,7 +70,7 @@
         }
       },
       multi(){
-        if(this.cellProps.multi==false){
+        if(this.cellProps.multi==false || this.originColumn.multi===false){
           return false
         }else{
           return true
@@ -96,20 +98,26 @@
     },
     methods: {
       openSelect(){
+        // disabled 不弹窗
+        if (this.componentDisabled) {
+          return
+        }
         this.$refs.innerDepartSelectModal.show()
       },
       handleEmpty(){
         this.handleOK('')
       },
-      handleOK(rows, idstr) {
+      handleOK(rows) {
         let value = ''
         if (!rows && rows.length <= 0) {
           this.departNames = ''
           this.departIds = ''
         } else {
-          value = rows.map(row => row[this.customReturnField]).join(',')
-          this.departNames = rows.map(row => row['departName']).join(',')
-          this.departIds = idstr
+          let storeField = this.storeField();
+          let textField = this.textField();
+          value = rows.map(row => row[storeField]).join(',')
+          this.departNames = rows.map(row => row[textField]).join(',')
+          this.departIds = value
         }
         this.handleChangeCommon(this.departIds)
       },
@@ -118,6 +126,34 @@
       },
       handleChange(value) {
         this.handleChangeCommon(value)
+      },
+      storeField(){
+        if(this.originColumn){
+          const str = this.originColumn.fieldExtendJson
+          if(str){
+            let json = JSON.parse(str)
+            if(json && json.store){
+              return json.store
+            }
+          }else if(this.originColumn.store){
+            return this.originColumn.store
+          }
+        }
+        return 'id'
+      },
+      textField(){
+        if(this.originColumn){
+          const str = this.originColumn.fieldExtendJson
+          if(str){
+            let json = JSON.parse(str)
+            if(json && json.text){
+              return json.text
+            }
+          }else if(this.originColumn.text){
+            return this.originColumn.text
+          }
+        }
+        return 'departName'
       }
     },
     enhanced: {

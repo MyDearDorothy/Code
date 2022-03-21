@@ -25,6 +25,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
+import java.util.function.Consumer;
 
 /**
  * <p>
@@ -77,8 +78,8 @@ public class SysDepartServiceImpl extends ServiceImpl<SysDepartMapper, SysDepart
 	/**
 	 * queryTreeList 对应 queryTreeList 查询所有的部门数据,以树结构形式响应给前端
 	 */
-	@Cacheable(value = CacheConstant.SYS_DEPARTS_CACHE)
 	@Override
+	@Cacheable(value = CacheConstant.SYS_DEPARTS_CACHE)
 	public List<SysDepartTreeModel> queryTreeList() {
 		LambdaQueryWrapper<SysDepart> query = new LambdaQueryWrapper<SysDepart>();
 		query.eq(SysDepart::getDelFlag, CommonConstant.DEL_FLAG_0.toString());
@@ -87,6 +88,26 @@ public class SysDepartServiceImpl extends ServiceImpl<SysDepartMapper, SysDepart
 		// 调用wrapTreeDataToTreeList方法生成树状数据
 		List<SysDepartTreeModel> listResult = FindsDepartsChildrenUtil.wrapTreeDataToTreeList(list);
 		return listResult;
+	}
+
+	/**
+	 * queryTreeList 根据部门id查询,前端回显调用
+	 */
+	@Override
+	public List<SysDepartTreeModel> queryTreeList(String ids) {
+		List<SysDepartTreeModel> listResult=new ArrayList<>();
+		LambdaQueryWrapper<SysDepart> query = new LambdaQueryWrapper<SysDepart>();
+		query.eq(SysDepart::getDelFlag, CommonConstant.DEL_FLAG_0.toString());
+		if(oConvertUtils.isNotEmpty(ids)){
+			query.in(true,SysDepart::getId,ids.split(","));
+		}
+		query.orderByAsc(SysDepart::getDepartOrder);
+		List<SysDepart> list= this.list(query);
+		for (SysDepart depart : list) {
+			listResult.add(new SysDepartTreeModel(depart));
+		}
+		return  listResult;
+
 	}
 
 	@Cacheable(value = CacheConstant.SYS_DEPART_IDS_CACHE)
@@ -267,6 +288,9 @@ public class SysDepartServiceImpl extends ServiceImpl<SysDepartMapper, SysDepart
 	public List<String> getMySubDepIdsByDepId(String departIds) {
 		//根据部门id获取所负责部门
 		String[] codeArr = this.getMyDeptParentOrgCode(departIds);
+		if(codeArr==null || codeArr.length==0){
+			return null;
+		}
 		return this.baseMapper.getSubDepIdsByOrgCodes(codeArr);
 	}
 
@@ -276,7 +300,7 @@ public class SysDepartServiceImpl extends ServiceImpl<SysDepartMapper, SysDepart
 	 * </p>
 	 */
 	@Override
-	public List<SysDepartTreeModel> searhBy(String keyWord,String myDeptSearch,String departIds) {
+	public List<SysDepartTreeModel> searchByKeyWord(String keyWord,String myDeptSearch,String departIds) {
 		LambdaQueryWrapper<SysDepart> query = new LambdaQueryWrapper<SysDepart>();
 		List<SysDepartTreeModel> newList = new ArrayList<>();
 		//myDeptSearch不为空时为我的部门搜索，只搜索所负责部门
@@ -287,9 +311,15 @@ public class SysDepartServiceImpl extends ServiceImpl<SysDepartMapper, SysDepart
 			}
 			//根据部门id获取所负责部门
 			String[] codeArr = this.getMyDeptParentOrgCode(departIds);
-			for(int i=0;i<codeArr.length;i++){
-				query.or().likeRight(SysDepart::getOrgCode,codeArr[i]);
+			//update-begin-author:taoyan date:20220104 for:/issues/3311 当用户属于两个部门的时候，且这两个部门没有上下级关系，我的部门-部门名称查询条件模糊搜索失效！
+			if (codeArr != null && codeArr.length > 0) {
+				query.nested(i -> {
+					for (String s : codeArr) {
+						i.or().likeRight(SysDepart::getOrgCode, s);
+					}
+				});
 			}
+			//update-end-author:taoyan date:20220104 for:/issues/3311 当用户属于两个部门的时候，且这两个部门没有上下级关系，我的部门-部门名称查询条件模糊搜索失效！
 			query.eq(SysDepart::getDelFlag, CommonConstant.DEL_FLAG_0.toString());
 		}
 		query.like(SysDepart::getDepartName, keyWord);
@@ -458,11 +488,27 @@ public class SysDepartServiceImpl extends ServiceImpl<SysDepartMapper, SysDepart
 	/**
 	 * 根据parentId查询部门树
 	 * @param parentId
+	 * @param ids 前端回显传递
 	 * @return
 	 */
 	@Override
-	public List<SysDepartTreeModel> queryTreeListByPid(String parentId) {
-		List<SysDepart> list = this.baseMapper.queryTreeListByPid(parentId);
+	public List<SysDepartTreeModel> queryTreeListByPid(String parentId,String ids) {
+		Consumer<LambdaQueryWrapper<SysDepart>> square = i -> {
+			if (oConvertUtils.isNotEmpty(ids)) {
+				i.in(SysDepart::getId, ids.split(","));
+			} else {
+				if(oConvertUtils.isEmpty(parentId)){
+					i.and(q->q.isNull(true,SysDepart::getParentId).or().eq(true,SysDepart::getParentId,""));
+				}else{
+					i.eq(true,SysDepart::getParentId,parentId);
+				}
+			}
+		};
+		LambdaQueryWrapper<SysDepart> lqw=new LambdaQueryWrapper();
+		lqw.eq(true,SysDepart::getDelFlag,CommonConstant.DEL_FLAG_0.toString());
+		lqw.func(square);
+		lqw.orderByDesc(SysDepart::getDepartOrder);
+		List<SysDepart> list = list(lqw);
 		List<SysDepartTreeModel> records = new ArrayList<>();
 		for (int i = 0; i < list.size(); i++) {
 			SysDepart depart = list.get(i);

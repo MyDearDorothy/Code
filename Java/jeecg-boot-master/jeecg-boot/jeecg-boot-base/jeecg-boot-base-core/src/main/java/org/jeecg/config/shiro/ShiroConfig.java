@@ -1,3 +1,4 @@
+
 package org.jeecg.config.shiro;
 
 import lombok.extern.slf4j.Slf4j;
@@ -15,6 +16,7 @@ import org.crazycake.shiro.RedisClusterManager;
 import org.crazycake.shiro.RedisManager;
 import org.jeecg.common.constant.CommonConstant;
 import org.jeecg.common.util.oConvertUtils;
+import org.jeecg.config.JeeccgBaseConfig;
 import org.jeecg.config.shiro.filters.CustomShiroFilterFactoryBean;
 import org.jeecg.config.shiro.filters.JwtFilter;
 import org.springframework.aop.framework.autoproxy.DefaultAdvisorAutoProxyCreator;
@@ -43,13 +45,12 @@ import java.util.*;
 @Configuration
 public class ShiroConfig {
 
-    @Value("${jeecg.shiro.excludeUrls}")
-    private String excludeUrls;
     @Resource
     LettuceConnectionFactory lettuceConnectionFactory;
     @Autowired
     private Environment env;
-
+    @Autowired
+    JeeccgBaseConfig jeeccgBaseConfig;
 
     /**
      * Filter Chain定义说明
@@ -58,14 +59,15 @@ public class ShiroConfig {
      * 2、当设置多个过滤器时，全部验证通过，才视为通过
      * 3、部分过滤器可指定参数，如perms，roles
      */
-    @Bean("shiroFilter")
+    @Bean("shiroFilterFactoryBean")
     public ShiroFilterFactoryBean shiroFilter(SecurityManager securityManager) {
         CustomShiroFilterFactoryBean shiroFilterFactoryBean = new CustomShiroFilterFactoryBean();
         shiroFilterFactoryBean.setSecurityManager(securityManager);
         // 拦截器
         Map<String, String> filterChainDefinitionMap = new LinkedHashMap<String, String>();
-        if(oConvertUtils.isNotEmpty(excludeUrls)){
-            String[] permissionUrl = excludeUrls.split(",");
+        String shiroExcludeUrls = jeeccgBaseConfig.getShiro().getExcludeUrls();
+        if(oConvertUtils.isNotEmpty(shiroExcludeUrls)){
+            String[] permissionUrl = shiroExcludeUrls.split(",");
             for(String url : permissionUrl){
                 filterChainDefinitionMap.put(url,"anon");
             }
@@ -89,6 +91,12 @@ public class ShiroConfig {
         filterChainDefinitionMap.put("/sys/common/static/**", "anon");//图片预览 &下载文件不限制token
         filterChainDefinitionMap.put("/sys/common/pdf/**", "anon");//pdf预览
         filterChainDefinitionMap.put("/generic/**", "anon");//pdf预览需要文件
+
+        filterChainDefinitionMap.put("/sys/getLoginQrcode/**", "anon"); //登录二维码
+        filterChainDefinitionMap.put("/sys/getQrcodeToken/**", "anon"); //监听扫码
+        filterChainDefinitionMap.put("/sys/checkAuth", "anon"); //授权接口排除
+
+
         filterChainDefinitionMap.put("/", "anon");
         filterChainDefinitionMap.put("/doc.html", "anon");
         filterChainDefinitionMap.put("/**/*.js", "anon");
@@ -118,13 +126,20 @@ public class ShiroConfig {
         filterChainDefinitionMap.put("/jmreport/**", "anon");
         filterChainDefinitionMap.put("/**/*.js.map", "anon");
         filterChainDefinitionMap.put("/**/*.css.map", "anon");
-        //大屏模板例子
-        filterChainDefinitionMap.put("/test/bigScreen/**", "anon");
+
+        //测试示例
+        filterChainDefinitionMap.put("/test/bigScreen/**", "anon"); //大屏模板例子
+        //filterChainDefinitionMap.put("/test/jeecgDemo/rabbitMqClientTest/**", "anon"); //MQ测试
+        //filterChainDefinitionMap.put("/test/jeecgDemo/html", "anon"); //模板页面
+        //filterChainDefinitionMap.put("/test/jeecgDemo/redis/**", "anon"); //redis测试
 
         //websocket排除
         filterChainDefinitionMap.put("/websocket/**", "anon");//系统通知和公告
         filterChainDefinitionMap.put("/newsWebsocket/**", "anon");//CMS模块
         filterChainDefinitionMap.put("/vxeSocket/**", "anon");//JVxeTable无痕刷新示例
+
+        //wps
+        filterChainDefinitionMap.put("/v1/**","anon");
 
         //性能监控  TODO 存在安全漏洞泄露TOEKN（durid连接池也有）
         filterChainDefinitionMap.put("/actuator/**", "anon");

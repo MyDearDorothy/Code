@@ -6,8 +6,8 @@ const getters = {
   color: state => state.app.color,
   token: state => state.user.token,
   avatar: state => {state.user.avatar = Vue.ls.get(USER_INFO).avatar; return state.user.avatar},
-  username: state => state.user.username,
-  nickname: state => {state.user.realname = Vue.ls.get(USER_INFO).realname; return state.user.realname},
+  username: state => state.user.info.username,
+  nickname: state => {state.user.info.realname = Vue.ls.get(USER_INFO).realname; return state.user.info.realname},
   welcome: state => state.user.welcome,
   permissionList: state => state.user.permissionList,
   userInfo: state => {state.user.info = Vue.ls.get(USER_INFO); return state.user.info},
@@ -16,7 +16,8 @@ const getters = {
   enhanceJs:(state) => (code) => {
     state.enhance.enhanceJs[code] = Vue.ls.get(ENHANCE_PRE+code);
     return state.enhance.enhanceJs[code]
-  }
+  },
+  sysSafeMode: state => state.user.sysSafeMode,
 
 }
 

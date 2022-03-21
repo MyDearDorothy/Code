@@ -7,13 +7,13 @@
 JEECG BOOT 低代码开发平台（前后端分离版本）
 ===============
 
-当前最新版本： 2.4.6（发布日期：2021-08-16）
+当前最新版本： 3.1.0（发布日期：2022-03-01）
 
 
 [![AUR](https://img.shields.io/badge/license-Apache%20License%202.0-blue.svg)](https://github.com/zhangdaiscott/jeecg-boot/blob/master/LICENSE)
 [![](https://img.shields.io/badge/Author-北京国炬软件-orange.svg)](http://www.jeecg.com)
 [![](https://img.shields.io/badge/Blog-官方博客-blue.svg)](https://jeecg.blog.csdn.net)
-[![](https://img.shields.io/badge/version-2.4.6-brightgreen.svg)](https://github.com/zhangdaiscott/jeecg-boot)
+[![](https://img.shields.io/badge/version-3.1.0-brightgreen.svg)](https://github.com/zhangdaiscott/jeecg-boot)
 [![GitHub stars](https://img.shields.io/github/stars/zhangdaiscott/jeecg-boot.svg?style=social&label=Stars)](https://github.com/zhangdaiscott/jeecg-boot)
 [![GitHub forks](https://img.shields.io/github/forks/zhangdaiscott/jeecg-boot.svg?style=social&label=Fork)](https://github.com/zhangdaiscott/jeecg-boot)
 
@@ -49,26 +49,21 @@ Jeecg-Boot低代码开发平台，可以应用在任何J2EE项目的开发中，
 
 - 开发文档：  [http://doc.jeecg.com](http://doc.jeecg.com)
 
-- 视频教程  ：[JeecgBoot入门视频](http://www.jeecg.com/doc/video)
+- 入门视频： [https://space.bilibili.com/454617261/channel/series](https://space.bilibili.com/454617261/channel/series)
 
-- 微服务启动：  [单体升级为微服务启动文档2.4+](http://doc.jeecg.com/2043906)
+- 新手指南： [快速入门](http://www.jeecg.com/doc/quickstart)  |   [常见问题 ](http://www.jeecg.com/doc/qa)  |   [技术支持](http://jeecg.com/doc/help) |  [1分钟体验低代码](https://my.oschina.net/jeecg/blog/3083313)
 
-- 常见问题：  [入门常见问题Q&A](http://jeecg.com/doc/qa)
+- 微服务开发：  [单体切换为微服务](http://doc.jeecg.com/2043906)
 
-- 更新日志：  [版本日志](http://www.jeecg.com/doc/log)
+- QQ交流群 ： ⑤860162132、683903138(VUE3版)、~~④774126647(满)、③816531124(满)、②769925425(满)、①284271917(满)~~
 
-
-
-交流互动
+Vue3版前端（Beta版）
 -----------------------------------
 
-- QQ交流群 ：  ④774126647、③816531124（满）、②769925425（满）、①284271917（满）
+> 采用Vue3.0、Vite、 Ant-Design-Vue、TypeScript 等新技术方案，包括二次封装组件、utils、hooks、动态菜单、权限校验、按钮级别权限控制等功能！ 是在 Vben-Admin 基础上研发的，适合于JeecgBoot的新版前端VUE3框架。
 
-- 反馈问题：  [反馈问题，请按格式发Issues](https://github.com/zhangdaiscott/jeecg-boot/issues/new)
-
-- 参与开源：  [欢迎加入JEECG开源团队，共同进步！！](http://www.jeecg.com/doc/join)
-
-- Online一分钟：  [1分钟快速学习](https://my.oschina.net/jeecg/blog/3083313)
+- 源码下载：https://github.com/jeecgboot/jeecgboot-vue3
+- 入门指南： [开发文档](http://vue3.jeecg.com/2398845)  |   [ VUE3版演示 ](http://boot3.jeecg.com)  |   [入门视频](https://www.bilibili.com/video/BV1V34y187Y9) 
 
 
 为什么选择JEECG-BOOT?
@@ -122,39 +117,38 @@ Jeecg-Boot低代码开发平台，可以应用在任何J2EE项目的开发中，
 -----------------------------------
 #### 开发环境
 
-- 语言：Java 8
+- 语言：Java 8+ (小于17)
 
-- IDE(JAVA)： IDEA / Eclipse安装lombok插件 
+- IDE(JAVA)： IDEA (必须安装lombok插件 )
 
-- IDE(前端)： WebStorm 或者 IDEA
+- IDE(前端)： IDEA 或者 WebStorm
 
 - 依赖管理：Maven
 
-- 数据库：MySQL5.7+  &  Oracle 11g & Sqlserver2017
-
 - 缓存：Redis
+
+- 数据库脚本：MySQL5.7+  &  Oracle 11g & Sqlserver2017（默认只提供三个库脚本，其他库需要自己转）
 
 
 #### 后端
+
 - 基础框架：Spring Boot 2.3.5.RELEASE
 
 - 微服务框架： Spring Cloud Alibaba 2.2.3.RELEASE
 
-- 持久层框架：Mybatis-plus 3.4.3.1、Minidao 
+- 持久层框架：MybatisPlus 3.4.3.1 
 
-- 报表工具： jimureport 1.3.78
+- 报表工具： JimuReport 1.4.32
 
-- 安全框架：Apache Shiro 1.7.0，Jwt 3.11.0
+- 安全框架：Apache Shiro 1.8.0，Jwt 3.11.0
 
 - 微服务技术栈：Spring Cloud Alibaba、Nacos、Gateway、Sentinel、Skywalking
 
 - 数据库连接池：阿里巴巴Druid 1.1.22
 
-- 缓存框架：redis
-
 - 日志打印：logback
 
-- 其他：fastjson，poi，Swagger-ui，quartz, lombok（简化代码）等。
+- 其他：autopoi, fastjson，poi，Swagger-ui，quartz, lombok（简化代码）等。
 
 
 #### 前端
@@ -167,8 +161,67 @@ Jeecg-Boot低代码开发平台，可以应用在任何J2EE项目的开发中，
 - [@antv/g2](https://antv.alipay.com/zh-cn/index.html) - Alipay AntV 数据可视化图表
 - [Viser-vue](https://viserjs.github.io/docs.html#/viser/guide/installation)  - antv/g2 封装实现
 - eslint，[@vue/cli 3.2.1](https://cli.vuejs.org/zh/guide)
-- vue-print-nb - 打印
+- vue-print-nb-jeecg - 打印
 
+
+#### 支持库
+
+|  数据库   |  支持   |
+| --- | --- |
+|   MySQL   |  √   |
+|  Oracle11g   |  √   |
+|  Sqlserver2017   |  √   |
+|   PostgreSQL   |  √   |
+|   DB2、Informix   |  √   |
+|   MariaDB   |  √   |
+|  SQLite、Hsqldb、Derby、H2   |  √   |
+|   达梦、人大金仓、神通   |  √   |
+|   华为高斯、虚谷、瀚高数据库   |  √   |
+|   阿里云PolarDB、PPAS、HerdDB   |  √   |
+|  Hive、HBase、CouchBase   |  √   |
+
+
+## 微服务解决方案
+
+
+1、服务注册和发现 Nacos √
+
+2、统一配置中心 Nacos  √
+
+3、路由网关 gateway(三种加载方式) √
+
+4、分布式 http feign √
+
+5、熔断和降级 Sentinel √
+
+6、分布式文件 Minio、阿里OSS √ 
+
+7、统一权限控制 JWT + Shiro √
+
+8、服务监控 SpringBootAdmin√
+
+9、链路跟踪 Skywalking   [参考文档](https://www.kancloud.cn/zhangdaiscott/jeecgcloud/1771670)
+
+10、消息中间件 RabbitMQ  √
+
+11、分布式任务 xxl-job  √ 
+
+12、分布式事务 Seata
+
+13、分布式日志 elk + kafka
+
+14、支持 docker-compose、k8s、jenkins
+
+15、CAS 单点登录   √
+
+16、路由限流   √
+
+   
+#### 微服务架构图
+![微服务架构图](https://jeecgos.oss-cn-beijing.aliyuncs.com/files/jeecgboot-weifuwu-cloud.png "在这里输入图片标题")
+
+### Jeecg Boot 产品功能蓝图
+![功能蓝图](https://jeecgos.oss-cn-beijing.aliyuncs.com/upload/test/Jeecg-Boot-lantu202005_1590912449914.jpg "在这里输入图片标题")
 
 
 
@@ -307,105 +360,14 @@ Jeecg-Boot低代码开发平台，可以应用在任何J2EE项目的开发中，
 │  └─我的抄送
 │  └─流程委派、抄送、跳转
 │  └─。。。
-└─其他模块
+│─OA办公组件 (暂不开源)
+│  ├─更多功能
+│  └─。。。
+└─其他模块 (暂不开源)
    └─更多功能开发中。。
    
 ```
 
-## 微服务整体解决方案(2.4+版本)
-
-
-1、服务注册和发现 Nacos √
-
-2、统一配置中心 Nacos  √
-
-3、路由网关 gateway(三种加载方式) √
-
-4、分布式 http feign √
-
-5、熔断和降级 Sentinel √
-
-6、分布式文件 Minio、阿里OSS √ 
-
-7、统一权限控制 JWT + Shiro √
-
-8、服务监控 SpringBootAdmin√
-
-9、链路跟踪 Skywalking   [参考文档](https://www.kancloud.cn/zhangdaiscott/jeecgcloud/1771670)
-
-10、消息中间件 RabbitMQ  √
-
-11、分布式任务 xxl-job  √ 
-
-12、分布式事务 Seata
-
-13、分布式日志 elk + kafka
-
-14、支持 docker-compose、k8s、jenkins
-
-15、CAS 单点登录   √
-
-16、路由限流   √
-
-   
-#### 微服务架构图
-![微服务架构图](https://jeecgos.oss-cn-beijing.aliyuncs.com/files/jeecgboot-weifuwu-cloud.png "在这里输入图片标题")
-
-### Jeecg Boot 产品功能蓝图
-![功能蓝图](https://jeecgos.oss-cn-beijing.aliyuncs.com/upload/test/Jeecg-Boot-lantu202005_1590912449914.jpg "在这里输入图片标题")
-
-
-后台开发环境和依赖
-----
-- java
-- maven
-- jdk8
-- mysql
-- redis
-- 数据库脚本：jeecg-boot/db/jeecgboot-mysql-5.7.sql
-- 默认登录账号： admin/123456
-
-
-前端开发环境和依赖
-----
-- node
-- yarn
-- webpack
-- eslint
-- @vue/cli 3.2.1
-- [ant-design-vue](https://github.com/vueComponent/ant-design-vue) - Ant Design Of Vue 实现
-- [vue-cropper](https://github.com/xyxiao001/vue-cropper) - 头像裁剪组件
-- [@antv/g2](https://antv.alipay.com/zh-cn/index.html) - Alipay AntV 数据可视化图表
-- [Viser-vue](https://viserjs.github.io/docs.html#/viser/guide/installation)  - antv/g2 封装实现
-- [jeecg-boot-angular 版本](https://gitee.com/dangzhenghui/jeecg-boot)
-
-项目下载和运行
-----
-
-- 拉取项目代码
-```bash
-git clone https://github.com/zhangdaiscott/jeecg-boot.git
-cd  jeecg-boot/ant-design-vue-jeecg
-```
-
-1. 安装node.js
-2. 切换到ant-design-vue-jeecg文件夹下
-```
-# 安装yarn
-npm install -g yarn
-
-# 下载依赖
-yarn install
-
-# 启动
-yarn run serve
-
-# 编译项目
-yarn run build
-
-# Lints and fixes files
-yarn run lint
-```
 
 
 
@@ -453,54 +415,6 @@ yarn run lint
 ![](https://oscimg.oschina.net/oscnet/d78218803a9e856a0aa82b45efc49849a0c.jpg)
 ![](https://oscimg.oschina.net/oscnet/0404054d9a12647ef6f82cf9cfb80a5ac02.jpg)
 ![](https://oscimg.oschina.net/oscnet/59c23b230f52384e588ee16309b44fa20de.jpg)
-
-
-其他说明
-----
-
-- 项目使用的 [vue-cli3](https://cli.vuejs.org/guide/), 请更新您的 cli
-
-- 关闭 Eslint (不推荐) 移除 `package.json` 中 `eslintConfig` 整个节点代码
-
-- 修改 Ant Design 配色，在文件 `vue.config.js` 中，其他 less 变量覆盖参考 [ant design](https://ant.design/docs/react/customize-theme-cn) 官方说明
-```ecmascript 6
-  css: {
-    loaderOptions: {
-      less: {
-        modifyVars: {
-          /* less 变量覆盖，用于自定义 ant design 主题 */
-
-          'primary-color': '#F5222D',
-          'link-color': '#F5222D',
-          'border-radius-base': '4px',
-        },
-        javascriptEnabled: true,
-      }
-    }
-  }
-```
-
-
-
-附属文档
-----
-- [Ant Design Vue](https://www.antdv.com/docs/vue/introduce-cn)
-
-- [报表 viser-vue](https://viserjs.github.io/demo.html#/viser/line/basic-line)
-
-- [Vue](https://cn.vuejs.org/v2/guide)
-
-- [路由/菜单说明](https://gitee.com/jeecg/jeecg-boot/tree/v1.1/ant-design-vue-jeecg/src/router/README.md)
-
-- [ANTD 默认配置项](https://gitee.com/jeecg/jeecg-boot/blob/v1.1/ant-design-vue-jeecg/src/defaultSettings.js)
-
-- 其他待补充...
-
-
-备注
-----
-
-> @vue/cli 升级后，eslint 规则更新了。由于影响到全部 .vue 文件，需要逐个验证。既暂时关闭部分原本不验证的规则，后期维护时，在逐步修正这些 rules
 
 
 ## 捐赠 

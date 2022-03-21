@@ -1,11 +1,7 @@
 package org.jeecg.modules.system.controller;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
-
-import javax.annotation.Resource;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
 import org.apache.shiro.SecurityUtils;
 import org.jeecg.common.api.vo.Result;
@@ -24,9 +20,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.web.bind.annotation.*;
 
-import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-
-import lombok.extern.slf4j.Slf4j;
+import javax.annotation.Resource;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
 
 /**
  * @Description: 在线用户
@@ -55,45 +53,50 @@ public class SysUserOnlineController {
     private BaseCommonService baseCommonService;
 
     @RequestMapping(value = "/list", method = RequestMethod.GET)
-    public Result<Page<SysUserOnlineVO>> list(@RequestParam(name="username", required=false) String username, @RequestParam(name="pageNo", defaultValue="1") Integer pageNo,
-                                              @RequestParam(name="pageSize", defaultValue="10") Integer pageSize) {
+    public Result<Page<SysUserOnlineVO>> list(@RequestParam(name="username", required=false) String username,
+                                              @RequestParam(name="pageNo", defaultValue="1") Integer pageNo,@RequestParam(name="pageSize", defaultValue="10") Integer pageSize) {
         Collection<String> keys = redisTemplate.keys(CommonConstant.PREFIX_USER_TOKEN + "*");
-        SysUserOnlineVO online;
         List<SysUserOnlineVO> onlineList = new ArrayList<SysUserOnlineVO>();
         for (String key : keys) {
-            online = new SysUserOnlineVO();
-            String token = (String) redisUtil.get(key);
-            if (!StringUtils.isEmpty(token)){
+            String token = (String)redisUtil.get(key);
+            if (StringUtils.isNotEmpty(token)) {
+                SysUserOnlineVO online = new SysUserOnlineVO();
                 online.setToken(token);
+                //TODO 改成一次性查询
                 LoginUser loginUser = sysBaseAPI.getUserByName(JwtUtil.getUsername(token));
-                BeanUtils.copyProperties(loginUser, online);
-                if (StringUtils.isNotEmpty(username)) {
-                    if (StringUtils.equals(username, online.getUsername())) {
+                if (loginUser != null) {
+                    //update-begin---author:wangshuai ---date:20220104  for：[JTC-382]在线用户查询无效------------
+                    //验证用户名是否与传过来的用户名相同
+                    boolean isMatchUsername=true;
+                    //判断用户名是否为空，并且当前循环的用户不包含传过来的用户名，那么就设成false
+                    if(oConvertUtils.isNotEmpty(username) && !loginUser.getUsername().contains(username)){
+                        isMatchUsername = false;
+                    }
+                    if(isMatchUsername){
+                        BeanUtils.copyProperties(loginUser, online);
                         onlineList.add(online);
                     }
-                } else {
-                    onlineList.add(online);
+                    //update-end---author:wangshuai ---date:20220104  for：[JTC-382]在线用户查询无效------------
                 }
             }
         }
+        Collections.reverse(onlineList);
 
         Page<SysUserOnlineVO> page = new Page<SysUserOnlineVO>(pageNo, pageSize);
         int count = onlineList.size();
         List<SysUserOnlineVO> pages = new ArrayList<>();
-        //计算当前页第一条数据的下标
-        int currId = pageNo>1 ? (pageNo-1)*pageSize:0;
-        for (int i=0; i<pageSize && i<count - currId;i++){
-            pages.add(onlineList.get(currId+i));
+        // 计算当前页第一条数据的下标
+        int currId = pageNo > 1 ? (pageNo - 1) * pageSize : 0;
+        for (int i = 0; i < pageSize && i < count - currId; i++) {
+            pages.add(onlineList.get(currId + i));
         }
         page.setSize(pageSize);
         page.setCurrent(pageNo);
         page.setTotal(count);
-        //计算分页总页数
-        page.setPages(count %10 == 0 ? count/10 :count/10+1);
+        // 计算分页总页数
+        page.setPages(count % 10 == 0 ? count / 10 : count / 10 + 1);
         page.setRecords(pages);
 
-        Collections.reverse(onlineList);
-        onlineList.removeAll(Collections.singleton(null));
         Result<Page<SysUserOnlineVO>> result = new Result<Page<SysUserOnlineVO>>();
         result.setSuccess(true);
         result.setResult(page);
