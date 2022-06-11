@@ -262,4 +262,34 @@ public class TestBinaryTree {
         }
         return ancestor;
     }
+    //    给定一个二叉搜索树 root 和一个目标结果 k，如果 BST 中存在两个元素且它们的和等于给定的目标结果，则返回 true。
+    public boolean findTarget(TreeNode root, int k) {
+        //中序遍历
+        Stack<TreeNode> stack=new Stack<>();
+        List<Integer> list=new ArrayList<>();
+        TreeNode p=root;
+        while(p!=null||!stack.isEmpty()){
+            if (p!=null){
+                stack.push(p);
+                p=p.left;
+            }
+            else{
+                p=stack.pop();
+                list.add(p.val);
+                p=p.right;
+            }
+        }
+
+        int low=0,high=list.size()-1,temp;
+        while(low<high){
+            temp=list.get(low)+list.get(high);
+            if (temp==k)
+                return true;
+            else if (temp<k)
+                low++;
+            else
+                high--;
+        }
+        return false;
+    }
 }

@@ -53,6 +53,45 @@ public class TestListNode {
         return root.next;
     }
 
+//    给你一个链表的头节点 head ，判断链表中是否有环。
+    public boolean hasCycle(ListNode head) {
+//        双指针
+        ListNode fast=head,slow=head;
+        while (fast!=null&&fast.next!=null){
+            fast=fast.next.next;
+            slow=slow.next;
+            if (slow==fast)
+                return true;
+        }
+        return false;
+    }
+
+//    反转链表 给你单链表的头节点 head ，请你反转链表，并返回反转后的链表。
+    public ListNode reverseList(ListNode head) {
+        ListNode prev=null,cur=head;
+        while (cur!=null){
+            ListNode next=cur.next;
+            cur.next=prev;
+            prev=cur;
+            cur=next;
+        }
+        return prev;
+    }
+
+//    给定一个已排序的链表的头 head ， 删除所有重复的元素，使每个元素只出现一次 。返回 已排序的链表 。
+    public ListNode deleteDuplicates(ListNode head) {
+        if (head==null)
+            return null;
+        ListNode p=head;
+        while (p.next!=null){
+            if (p.next.val==p.val)
+                p.next=p.next.next;
+            else
+                p=p.next;
+        }
+        return head;
+    }
+
     //    在一个 n * m 的二维数组中，每一行都按照从左到右递增的顺序排序，每一列都按照从上到下递增的顺序排序。请完成一个高效的函数，判断数组中是否含有该整数。
     public boolean findNumberIn2DArray(int[][] matrix, int target) {
         if (matrix == null || matrix.length == 0 || matrix[0].length == 0)
@@ -70,5 +109,5 @@ public class TestListNode {
         }
         return false;
     }
-
 }
+

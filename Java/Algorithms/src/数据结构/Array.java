@@ -23,6 +23,7 @@ public class Array {
         }
         return false;
     }
+
 //    给你一个整数数组 nums ，请你找出一个具有最大和的连续子数组（子数组最少包含一个元素），返回其最大和。子数组是数组中的一个连续部分。
     public int maxSubArray(int[] nums) {
         int maxAnswer=nums[0],pre=0;
@@ -33,8 +34,7 @@ public class Array {
         return maxAnswer;
     }
 
-//    给你两个按 非递减顺序 排列的整数数组nums1 和 nums2，另有两个整数 m 和 n ，分别表示 nums1 和 nums2 中的元素数目。
-//    请你 合并 nums2 到 nums1 中，使合并后的数组同样按 非递减顺序 排列。
+//    给你两个按 非递减顺序 排列的整数数组nums1 和 nums2，另有两个整数 m 和 n ，分别表示 nums1 和 nums2 中的元素数目。请你 合并 nums2 到 nums1 中，使合并后的数组同样按 非递减顺序 排列。
     public void merge(int[] nums1, int m, int[] nums2, int n) {
         int i = m--+--n;
         while(n>=0) {
