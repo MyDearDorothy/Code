@@ -1,0 +1,75 @@
+{
+  "keywordFileContentHash": "DF3C99FBE2261B348E96F8A35422004B",
+  "keywordClasses": [
+    {
+      "name": "example.WebUICustomKeywords",
+      "keywordMethods": [
+        {
+          "name": "getHtmlTableRows",
+          "parameters": [
+            {
+              "name": "table",
+              "initialExpression": "",
+              "type": {
+                "fullClassName": "com.kms.katalon.core.testobject.TestObject",
+                "unresolvedClassName": "TestObject",
+                "isArray": false,
+                "isGnericsPlaceHolder": false,
+                "hasImmutableClassName": false,
+                "genericsTypes": [],
+                "errorOnParsing": false
+              }
+            },
+            {
+              "name": "outerTagName",
+              "initialExpression": "",
+              "type": {
+                "fullClassName": "java.lang.String",
+                "unresolvedClassName": "String",
+                "isArray": false,
+                "isGnericsPlaceHolder": false,
+                "hasImmutableClassName": false,
+                "genericsTypes": [],
+                "errorOnParsing": false
+              }
+            }
+          ],
+          "javadoc": "/**\r\n\t *   获取HTML表格的总行数\r\n\t * @param table：HTML表格\r\n\t * @param outerTagName：HTML表格下面的tag标签，一般为tbody\r\n\t * @return 返回HTML表格行的所有行数\r\n\t */"
+        },
+        {
+          "name": "getHtmlTableColumns",
+          "parameters": [
+            {
+              "name": "row",
+              "initialExpression": "",
+              "type": {
+                "fullClassName": "org.openqa.selenium.WebElement",
+                "unresolvedClassName": "WebElement",
+                "isArray": false,
+                "isGnericsPlaceHolder": false,
+                "hasImmutableClassName": false,
+                "genericsTypes": [],
+                "errorOnParsing": false
+              }
+            },
+            {
+              "name": "tagName",
+              "initialExpression": "",
+              "type": {
+                "fullClassName": "java.lang.String",
+                "unresolvedClassName": "String",
+                "isArray": false,
+                "isGnericsPlaceHolder": false,
+                "hasImmutableClassName": false,
+                "genericsTypes": [],
+                "errorOnParsing": false
+              }
+            }
+          ],
+          "javadoc": "/**\r\n\t *   获取HTML表格行的所有单元格\r\n\t * @param row：HTML表格的总行数\r\n\t * @param tagName：HTML表格下面的tag标签，一般为：TD或TH\r\n\t * @return All cells inside HTML table row 返回HTML表格行的所有单元格\r\n\t */"
+        }
+      ]
+    }
+  ],
+  "javadocParsed": true
+}

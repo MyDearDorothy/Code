@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<WebElementEntity>
+   <description></description>
+   <name>item</name>
+   <tag></tag>
+   <elementGuidId>3494dd46-c809-4511-a475-12439f10f858</elementGuidId>
+   <selectorCollection>
+      <entry>
+         <key>BASIC</key>
+      </entry>
+      <entry>
+         <key>XPATH</key>
+         <value>//*[@id=&quot;main&quot;]/div[2]/div[1]/div[1]/div[2]/div/div[3]/table/tbody/tr[3]/td[3]/div/span/a
+//*[@id=&quot;main&quot;]/div[2]/div[1]/div[1]/div[2]/div/div[3]/table/tbody/tr[1]/td[3]/div/span/a</value>
+      </entry>
+   </selectorCollection>
+   <selectorMethod>XPATH</selectorMethod>
+   <useRalativeImagePath>false</useRalativeImagePath>
+</WebElementEntity>
